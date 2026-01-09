@@ -1,0 +1,54 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Home Snapshot matches snapshot 1`] = `
+<div>
+  <div
+    class="jsx-e90fbafd28d468d container"
+  >
+    <main
+      class="jsx-e90fbafd28d468d"
+    >
+      <h1
+        class="jsx-e90fbafd28d468d"
+      >
+        DevOps Assignment
+      </h1>
+      <div
+        class="jsx-e90fbafd28d468d status"
+      >
+        <p
+          class="jsx-e90fbafd28d468d"
+        >
+          Status: 
+          <span
+            class="jsx-e90fbafd28d468d error"
+          />
+        </p>
+      </div>
+      <div
+        class="jsx-e90fbafd28d468d message-box"
+      >
+        <h2
+          class="jsx-e90fbafd28d468d"
+        >
+          Backend Message:
+        </h2>
+        <p
+          class="jsx-e90fbafd28d468d"
+        >
+          Loading...
+        </p>
+      </div>
+      <div
+        class="jsx-e90fbafd28d468d info"
+      >
+        <p
+          class="jsx-e90fbafd28d468d"
+        >
+          Backend URL: 
+        </p>
+      </div>
+    </main>
+  </div>
+</div>
+`;
