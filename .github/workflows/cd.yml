@@ -43,6 +43,16 @@ jobs:
           ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ github.sha }}
           ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:latest
 
+    - name: Build and push Frontend to ECR
+      if: steps.login-ecr.outcome == 'success'
+      uses: docker/build-push-action@v5
+      with:
+        context: ./frontend
+        push: true
+        tags: |
+          ${{ steps.login-ecr.outputs.registry }}/devops-frontend:${{ github.sha }}
+          ${{ steps.login-ecr.outputs.registry }}/devops-frontend:latest
+
     # --- GCP Login & Push ---
     - name: Google Auth
       uses: google-github-actions/auth@v2
@@ -71,6 +81,16 @@ jobs:
         tags: |
           gcr.io/${{ env.GCP_PROJECT_ID }}/${{ env.GCR_REPOSITORY }}:${{ github.sha }}
           gcr.io/${{ env.GCP_PROJECT_ID }}/${{ env.GCR_REPOSITORY }}:latest
+
+    - name: Build and push Frontend to GCR
+      if: env.GCP_PROJECT_ID != ''
+      uses: docker/build-push-action@v5
+      with:
+        context: ./frontend
+        push: true
+        tags: |
+          gcr.io/${{ env.GCP_PROJECT_ID }}/devops-frontend:${{ github.sha }}
+          gcr.io/${{ env.GCP_PROJECT_ID }}/devops-frontend:latest
 
   deploy-terraform:
     needs: build-and-push
