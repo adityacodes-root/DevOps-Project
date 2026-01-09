@@ -58,6 +58,10 @@ jobs:
       uses: google-github-actions/setup-gcloud@v2
       continue-on-error: true
 
+    - name: Enable Artifact Registry API
+      run: gcloud services enable artifactregistry.googleapis.com
+      continue-on-error: true
+
     - name: Configure Docker for GCP
       run: gcloud auth configure-docker
       continue-on-error: true
