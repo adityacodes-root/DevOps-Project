@@ -32,7 +32,6 @@ jobs:
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v2
 
-
     - name: Build and push Backend to ECR
       if: steps.login-ecr.outcome == 'success'
       uses: docker/build-push-action@v5
@@ -65,7 +64,7 @@ jobs:
       continue-on-error: true
 
     - name: Enable GCP Services
-      run: gcloud services enable artifactregistry.googleapis.com compute.googleapis.com secretmanager.googleapis.com
+      run: gcloud services enable artifactregistry.googleapis.com compute.googleapis.com secretmanager.googleapis.com run.googleapis.com
       continue-on-error: true
 
     - name: Configure Docker for GCP
@@ -100,16 +99,26 @@ jobs:
       
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
-        
-      - name: Create Backend Bucket
+
+      # --- GCP Auth for Terraform (THIS WAS MISSING!) ---
+      - name: Google Auth
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Create State Bucket
         run: |
-          gcloud storage buckets create gs://devops-assignment-tf-state --location=us-central1 || true
-        continue-on-error: true
+          gcloud storage buckets create gs://devops-assignment-tf-state --location=us-central1 2>/dev/null || echo "Bucket already exists"
 
       - name: Terraform Init GCP
         run: |
           cd terraform/gcp
           terraform init
+        env:
+          GOOGLE_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS }}
           
       - name: Terraform Apply GCP
         run: |
@@ -120,6 +129,14 @@ jobs:
           TF_VAR_alert_email: ${{ secrets.ALERT_EMAIL }}
           TF_VAR_database_secret: ${{ secrets.DATABASE_SECRET }}
           GOOGLE_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS }}
+
+      # --- AWS Auth for Terraform ---
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
 
       - name: Terraform Init AWS
         run: |
@@ -136,4 +153,3 @@ jobs:
           TF_VAR_db_password: ${{ secrets.DB_PASSWORD }}
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-
