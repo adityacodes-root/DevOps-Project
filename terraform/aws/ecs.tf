@@ -34,7 +34,7 @@ resource "aws_ecs_task_definition" "backend" {
 }
 
 resource "aws_ecs_service" "backend" {
-  name            = "devops-backend-service"
+  name            = "devops-backend-service-v2"
   cluster         = aws_ecs_cluster.main.id
   task_definition = aws_ecs_task_definition.backend.arn
   desired_count   = 2
@@ -93,7 +93,7 @@ resource "aws_ecs_task_definition" "frontend" {
 }
 
 resource "aws_ecs_service" "frontend" {
-  name            = "devops-frontend-service"
+  name            = "devops-frontend-service-v2"
   cluster         = aws_ecs_cluster.main.id
   task_definition = aws_ecs_task_definition.frontend.arn
   desired_count   = 2
