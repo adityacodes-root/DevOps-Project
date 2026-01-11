@@ -5,8 +5,10 @@ terraform {
       version = "~> 5.0"
     }
   }
-  backend "local" {
-     path = "terraform.tfstate"
+  backend "s3" {
+    bucket = "devops-assignment-tf-state-aws"
+    key    = "terraform/state/aws.tfstate"
+    region = "us-east-2"
   }
 }
 

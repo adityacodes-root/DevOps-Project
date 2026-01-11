@@ -139,6 +139,10 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
 
+      - name: Create AWS State Bucket
+        run: |
+          aws s3api create-bucket --bucket devops-assignment-tf-state-aws --region us-east-2 --create-bucket-configuration LocationConstraint=us-east-2 2>/dev/null || echo "Bucket already exists"
+
       - name: Terraform Init AWS
         run: |
           cd terraform/aws
