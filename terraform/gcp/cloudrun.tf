@@ -1,5 +1,5 @@
 resource "google_cloud_run_v2_service" "backend" {
-  name     = "devops-backend-v4"
+  name     = "devops-backend-v5"
   location = var.region
   ingress = "INGRESS_TRAFFIC_ALL"
 
@@ -28,7 +28,7 @@ resource "google_cloud_run_v2_service_iam_member" "backend_public" {
 }
 
 resource "google_cloud_run_v2_service" "frontend" {
-  name     = "devops-frontend-v4"
+  name     = "devops-frontend-v5"
   location = var.region
   ingress = "INGRESS_TRAFFIC_ALL"
 
