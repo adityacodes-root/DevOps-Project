@@ -24,7 +24,7 @@ resource "aws_ecs_task_definition" "backend" {
       logConfiguration = {
         logDriver = "awslogs"
         options = {
-          "awslogs-group"         = "/ecs/devops-backend"
+          "awslogs-group"         = "/ecs/devops-backend-v2"
           "awslogs-region"        = var.aws_region
           "awslogs-stream-prefix" = "ecs"
         }
@@ -83,7 +83,7 @@ resource "aws_ecs_task_definition" "frontend" {
       logConfiguration = {
         logDriver = "awslogs"
         options = {
-          "awslogs-group"         = "/ecs/devops-frontend"
+          "awslogs-group"         = "/ecs/devops-frontend-v2"
           "awslogs-region"        = var.aws_region
           "awslogs-stream-prefix" = "ecs"
         }
@@ -115,11 +115,11 @@ resource "aws_ecs_service" "frontend" {
 }
 
 resource "aws_cloudwatch_log_group" "backend" {
-  name = "/ecs/devops-backend"
+  name = "/ecs/devops-backend-v2"
   retention_in_days = 7
 }
 
 resource "aws_cloudwatch_log_group" "frontend" {
-  name = "/ecs/devops-frontend"
+  name = "/ecs/devops-frontend-v2"
   retention_in_days = 7
 }

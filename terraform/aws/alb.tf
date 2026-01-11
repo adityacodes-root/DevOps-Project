@@ -1,5 +1,5 @@
 resource "aws_lb" "main" {
-  name               = "devops-alb"
+  name               = "devops-alb-v2"
   internal           = false
   load_balancer_type = "application"
   security_groups    = [aws_security_group.alb_sg.id]
@@ -7,7 +7,7 @@ resource "aws_lb" "main" {
 }
 
 resource "aws_lb_target_group" "backend" {
-  name        = "devops-backend-tg"
+  name        = "devops-backend-tg-v2"
   port        = 8000
   protocol    = "HTTP"
   vpc_id      = aws_vpc.main.id
@@ -19,7 +19,7 @@ resource "aws_lb_target_group" "backend" {
 }
 
 resource "aws_lb_target_group" "frontend" {
-  name        = "devops-frontend-tg"
+  name        = "devops-frontend-tg-v2"
   port        = 3000
   protocol    = "HTTP"
   vpc_id      = aws_vpc.main.id

@@ -1,5 +1,5 @@
 resource "aws_secretsmanager_secret" "app_secret" {
-  name = "devops-app-secret"
+  name = "devops-app-secret-v2"
   description = "Application configuration secrets"
 }
 
@@ -10,7 +10,7 @@ resource "aws_secretsmanager_secret_version" "app_secret_val" {
 
 # Grant ECS execution role access to secrets
 resource "aws_iam_role_policy" "ecs_secrets_access" {
-  name = "devops-ecs-secrets-access"
+  name = "devops-ecs-secrets-access-v2"
   role = aws_iam_role.ecs_execution_role.id
 
   policy = jsonencode({

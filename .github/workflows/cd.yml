@@ -143,28 +143,12 @@ jobs:
         run: |
           aws s3api create-bucket --bucket devops-assignment-tf-state-aws --region us-east-2 --create-bucket-configuration LocationConstraint=us-east-2 2>/dev/null || echo "Bucket already exists"
 
+
       - name: Terraform Init AWS
         run: |
           cd terraform/aws
           terraform init
-
-      - name: Import Existing AWS Resources
-        continue-on-error: true
-        run: |
-          cd terraform/aws
-          # Import existing resources (will error if already in state or doesn't exist, hence continue-on-error)
-          terraform import aws_lb.main devops-alb 2>/dev/null || true
-          terraform import 'aws_lb_target_group.backend' $(aws elbv2 describe-target-groups --names devops-backend-tg --query 'TargetGroups[0].TargetGroupArn' --output text 2>/dev/null) 2>/dev/null || true
-          terraform import 'aws_lb_target_group.frontend' $(aws elbv2 describe-target-groups --names devops-frontend-tg --query 'TargetGroups[0].TargetGroupArn' --output text 2>/dev/null) 2>/dev/null || true
-          terraform import aws_iam_role.ecs_execution_role devops-ecs-execution-role-ohio 2>/dev/null || true
-          terraform import aws_iam_role.ecs_task_role devops-ecs-task-role-ohio 2>/dev/null || true
-          terraform import aws_cloudwatch_log_group.backend /ecs/devops-backend 2>/dev/null || true
-          terraform import aws_cloudwatch_log_group.frontend /ecs/devops-frontend 2>/dev/null || true
-          terraform import aws_secretsmanager_secret.app_secret devops-app-secret 2>/dev/null || true
-        env:
-          TF_VAR_aws_region: ${{ env.AWS_REGION }}
-          TF_VAR_ecr_repository_url: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com
-          TF_VAR_db_password: ${{ secrets.DB_PASSWORD }}
+          
           
       - name: Terraform Apply AWS
         run: |
