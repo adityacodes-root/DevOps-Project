@@ -1,34 +1,28 @@
-# DevOps Assignment - Multi-Cloud Deployment
+# DevOps Project 
+# Multi-Cloud Web Application
 
-A production-ready two-tier web application (Python FastAPI backend + Next.js frontend) deployed to **AWS** and **GCP** with full CI/CD automation, monitoring, and security.
+A production-ready two-tier web application demonstrating modern DevOps practices across AWS and GCP. Built with Python FastAPI, Next.js, and fully automated CI/CD pipelines.
 
----
+![Architecture Diagram](https://github.com/user-attachments/assets/ecbfdc14-930b-4f2d-a9b5-18a53393fe9c)
 
-## 🏗️ Architecture Overview
+## Live Demo
 
-<p align="center">
-  <img src="https://github.com/user-attachments/assets/ecbfdc14-930b-4f2d-a9b5-18a53393fe9c" width="800" />
-</p>
+**Check it out:** https://devops-frontend-v5-743723559454.us-central1.run.app/
 
----
-## 🌐 Live URLs
+## What I Built
 
-### AWS
-| Service | URL |
-|---------|-----|
-| Frontend | http://devops-alb-v2-1840220508.us-east-2.elb.amazonaws.com |
-| Backend API | http://devops-alb-v2-1840220508.us-east-2.elb.amazonaws.com/api/health |
-| Backend API | http://devops-alb-v2-1840220508.us-east-2.elb.amazonaws.com/api/message |
+This project showcases a complete cloud-native application deployed to both AWS and GCP, with infrastructure as code, automated testing, and comprehensive monitoring. The application features a FastAPI backend and Next.js frontend, demonstrating my ability to work with modern cloud platforms and DevOps tooling.
 
-### GCP
-| Service | URL |
-|---------|-----|
-| Frontend | https://devops-frontend-v5-743723559454.us-central1.run.app/ |
-| Backend API | https://devops-backend-v5-743723559454.us-central1.run.app/ |
+## Tech Stack
 
----
+**Frontend:** Next.js
+**Backend:** Python, FastAPI, Uvicorn  
+**Cloud Platforms:** AWS (ECS, ALB, CloudWatch, VPC, IAM), GCP (Cloud Run, Cloud Monitoring)  
+**Infrastructure:** Terraform, Docker  
+**CI/CD:** GitHub Actions  
+**Testing:** Pytest, Jest
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 .
@@ -66,49 +60,63 @@ A production-ready two-tier web application (Python FastAPI backend + Next.js fr
         └── cd.yml            # CD pipeline (main)
 ```
 
----
+## Key Features
 
-## 🚀 CI/CD Pipeline
+### Automated CI/CD
+- **CI Pipeline** runs on every push to `develop` - executes unit tests for both frontend and backend, builds Docker images, and validates the build
+- **CD Pipeline** deploys to production on merge to `main` - pushes images to container registries and provisions infrastructure via Terraform
+- Zero-downtime deployments with automated rollbacks on failure
 
-### CI Pipeline (`ci.yml`) - Triggers on `develop` branch
-1. ✅ Checkout code
-2. ✅ Run backend tests (pytest)
-3. ✅ Run frontend tests (Jest)
-4. ✅ Build Docker images
-5. ✅ Tag with Git SHA
+### Multi-Cloud Infrastructure
+**AWS Deployment**
+- ECS Fargate for serverless container orchestration
+- Application Load Balancer for traffic distribution
+- Multi-AZ deployment for high availability
+- CloudWatch for metrics and alerting
 
-### CD Pipeline (`cd.yml`) - Triggers on `main` branch
-1. ✅ Build & push images to ECR (AWS) and Artifact Registry (GCP)
-2. ✅ Run Terraform to deploy AWS infrastructure
-3. ✅ Run Terraform to deploy GCP infrastructure
-4. ✅ Zero manual steps
+**GCP Deployment**
+- Cloud Run for fully managed container hosting
+- Auto-scaling based on traffic patterns
+- Built-in HTTPS and load balancing
 
-### Git Workflow
-```
-feature/* → develop (CI runs) → PR to main → main (CD deploys)
-```
+### Security Best Practices
+- Secrets stored in AWS Secrets Manager and GCP Secret Manager
+- IAM roles following least-privilege principle
+- Security groups limiting traffic to necessary ports only
+- Container images built with multi-stage Dockerfiles to minimize attack surface
 
----
+### Monitoring & Observability
+- Custom CloudWatch dashboards tracking CPU and memory utilization
+- GCP Cloud Monitoring for request latency and error rates
+- Automated alerts for anomalous behavior (CPU threshold violations)
+- Centralized logging for troubleshooting
 
-## 🛠️ Local Development
+### Resiliency
+- Load balancing across multiple container instances
+- Automatic health checks and container replacement
+- Infrastructure spanning multiple availability zones
+- Auto-scaling policies based on demand
 
-### Backend
+## Development
+
+Running the application locally:
+
 ```bash
+# Backend
 cd backend
 python -m venv venv
-source venv/bin/activate  # Windows: .\venv\Scripts\activate
+source venv/bin/activate
 pip install -r requirements.txt
-uvicorn app.main:app --reload --port 8000
-```
+uvicorn app.main:app --reload
 
-### Frontend
-```bash
+# Frontend
 cd frontend
 npm install
 npm run dev
 ```
 
-### Run Tests
+Running tests:
+
 ```bash
 # Backend tests
 cd backend && pytest
@@ -117,101 +125,20 @@ cd backend && pytest
 cd frontend && npm test
 ```
 
----
+## Infrastructure Management
 
-## 🔐 Security
+All infrastructure is defined as code using Terraform. State files are stored remotely in S3 (AWS) and Google Cloud Storage (GCP) for team collaboration and disaster recovery.
 
-### Secrets Management
-| Platform | Service | Secrets Stored |
-|----------|---------|----------------|
-| AWS | Secrets Manager | `devops-app-secret-v2` |
-| GCP | Secret Manager | `devops-app-secret-v5` |
-| CI/CD | GitHub Secrets | All credentials |
+```bash
+cd terraform/aws
+terraform init
+terraform plan
+terraform apply
 
-### IAM Roles (Least Privilege)
-- **AWS**: `devops-ecs-execution-role-v2`, `devops-ecs-task-role-v2`
-- **GCP**: Cloud Run service accounts
+cd ../gcp
+terraform init
+terraform plan
+terraform apply
+```
 
-### Network Security
-| Resource | Ingress | Egress |
-|----------|---------|--------|
-| AWS ALB | Port 80 (public) | All |
-| AWS ECS Tasks | Port 8000, 3000 (from ALB only) | All |
-| GCP Cloud Run | HTTPS (public) | All |
-
----
-
-## 📊 Monitoring & Alerting
-
-### Dashboards
-- **AWS**: CloudWatch Dashboard (`devops-assignment-dashboard`)
-  - CPU Utilization
-  - Memory Utilization
-- **GCP**: Cloud Monitoring Dashboard
-  - Request count/latency
-  - Container metrics
-
-### Alerts Configured
-| Alert | Condition | Notification |
-|-------|-----------|--------------|
-| High CPU (AWS) | CPU > 70% for 5 min | SNS → Email |
-
----
-
-## ⚖️ Load Balancing & Resiliency
-
-### AWS
-- **ALB** distributes traffic across 2 ECS tasks per service
-- **Fargate** automatically replaces unhealthy containers
-- **Multi-AZ** deployment (us-east-2a, us-east-2b)
-
-### GCP
-- **Cloud Run** auto-scales based on traffic
-- Built-in load balancing
-
-### Testing Resiliency
-1. Stop one ECS task via AWS Console
-2. Verify application remains accessible
-3. Observe new task automatically starting
-
----
-
-## 📦 Terraform State
-
-| Cloud | Backend | Bucket |
-|-------|---------|--------|
-| AWS | S3 | `devops-assignment-tf-state-aws` |
-| GCP | GCS | `devops-assignment-tf-state` |
-
----
-
-## 📋 API Endpoints
-
-| Endpoint | Method | Description |
-|----------|--------|-------------|
-| `/` | GET | Backend health message |
-| `/api/health` | GET | Health check |
-| `/api/message` | GET | Integration message |
-
----
-
-## ✅ Assignment Checklist
-
-- [x] Version Control (main/develop branching)
-- [x] Backend with tests (pytest)
-- [x] Frontend with tests (Jest)
-- [x] Multi-stage Dockerfiles
-- [x] CI/CD with GitHub Actions
-- [x] Deployed to AWS (ECS + ALB)
-- [x] Deployed to GCP (Cloud Run)
-- [x] Terraform for all infrastructure
-- [x] Monitoring dashboards
-- [x] CPU alert configured
-- [x] Secrets in Secrets Manager
-- [x] Least-privilege IAM roles
-- [x] Load balancing (2+ instances)
-- [x] README documentation
-
----
-
-Thank you!
+Thanks for reading, drop a star if you feel like it😗
