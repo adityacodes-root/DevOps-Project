@@ -161,3 +161,11 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
+      - name: Force Redeploy ECS Services
+        run: |
+          aws ecs update-service --cluster devops-cluster --service devops-frontend-service-v2 --force-new-deployment --region ${{ env.AWS_REGION }}
+          aws ecs update-service --cluster devops-cluster --service devops-backend-service-v2 --force-new-deployment --region ${{ env.AWS_REGION }}
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: ${{ env.AWS_REGION }}
